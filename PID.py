@@ -87,7 +87,7 @@ result = matlab.step(t)
 plt.plot(result[1], result[0])
 plt.show()
 
-## Extra Code for PID if matlab.step not used
+## If matlab library not used
 import control.matlab as matlab
 import time
 
@@ -193,6 +193,18 @@ class PID:
 
     def transferFunc(self):
         # transfer funciton of PID
-        s = matlab.tf('s')
+        # s = matlab.tf('s')
         func = self.Kp + self.Ki / s + self.Kd * s
         return func
+
+# plant object
+class Damping1D:
+    def __init__(self, m = 1, b = 10, k = 20):
+        # define variables
+        self.m = m
+        self.b = b
+        self.k = k
+
+        # transfer function
+        func = 1/(m*s**2 + b*s + k)
+        self.func = func
