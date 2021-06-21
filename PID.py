@@ -78,17 +78,18 @@ def total_transfer(func1, func2):
 ## TESTING
 import matplotlib.pyplot as plt
 
-loop = PID(300, 50, 20)
+loop = PID(300, 0, 0)
 unity = Damping1D()
 
 t = total_transfer(loop.func, unity.func)
 result = matlab.step(t)
 
 plt.plot(result[1], result[0])
-plt.show()
+#plt.show()
 
-## If matlab library not used
-import control.matlab as matlab
+## If transfer function not used
+import matplotlib.pyplot as plt
+import sympy
 import time
 
 class PID:
@@ -106,7 +107,6 @@ class PID:
 
         # set up default values
         self.default()
-        self.func = self.transferFunc()
 
     def default(self):
         # 0 as default
@@ -191,12 +191,6 @@ class PID:
         # set set point
         self.setpoint = set_point
 
-    def transferFunc(self):
-        # transfer funciton of PID
-        # s = matlab.tf('s')
-        func = self.Kp + self.Ki / s + self.Kd * s
-        return func
-
 # plant object
 class Damping1D:
     def __init__(self, m = 1, b = 10, k = 20):
@@ -205,6 +199,24 @@ class Damping1D:
         self.b = b
         self.k = k
 
-        # transfer function
+        # function
+        t, s = sympy.symbols('t, s')
         func = 1/(m*s**2 + b*s + k)
-        self.func = func
+        F = sympy.inverse_laplace_transform(func, s, t)
+        self.timefunc = F.simplify()
+        self.transfunc = func
+
+# compute feedforward loop transfer function
+def total_transfer(func1, func2):
+    transfer = func1 * func2 / (1+ func1 * func2)
+    return transfer
+
+## Testing
+#from scipy.interpolate import spline
+
+pid = PID(1, 1, 0.1)
+
+plant = Damping1D()
+function = plant.timefunc
+print(function)
+sympy.plot(function)
