@@ -107,6 +107,7 @@ class PID:
 
         # set up default values
         self.default()
+        self.func = self.transferFunc()
 
     def default(self):
         # 0 as default
@@ -191,6 +192,12 @@ class PID:
         # set set point
         self.setpoint = set_point
 
+    def transferFunc(self):
+        # transfer funciton of PID
+        s = matlab.tf('s')
+        func = self.Kp + self.Ki / s + self.Kd * s
+        return func
+
 # plant object
 class Damping1D:
     def __init__(self, m = 1, b = 10, k = 20):
@@ -213,10 +220,17 @@ def total_transfer(func1, func2):
 
 ## Testing
 #from scipy.interpolate import spline
+from scipy.signal import step
+import control.matlab as mlab
 
-pid = PID(1, 1, 0.1)
+loop = PID(300, 0, 0)
+unity = Damping1D()
+t, s = sympy.symbols('t, s')
+y = (total_transfer(loop.func, unity.func))/s
 
-plant = Damping1D()
-function = plant.timefunc
-print(function)
-sympy.plot(function)
+sympy.plot(t)
+# result = matlab.step(t)
+
+# plt.plot(result[1], result[0])
+#plt.show()
+#sympy.plot(function)
