@@ -87,7 +87,10 @@ result = matlab.step(t)
 plt.plot(result[1], result[0])
 #plt.show()
 
-## If transfer function not used
+
+
+
+## Other Code
 import matplotlib.pyplot as plt
 import sympy
 import time
