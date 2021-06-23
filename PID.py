@@ -78,10 +78,14 @@ def total_transfer(func1, func2):
 ## TESTING
 import matplotlib.pyplot as plt
 
-loop = PID(300, 0, 0)
+# placing poles?
+
+loop = PID(300,0,0)
 unity = Damping1D()
 
 t = total_transfer(loop.func, unity.func)
+print(t)
+
 result = matlab.step(t)
 
 plt.plot(result[1], result[0])
