@@ -94,6 +94,8 @@ plt.plot(result[1], result[0])
 
 
 
+
+
 ## Other Code
 import matplotlib.pyplot as plt
 import sympy
